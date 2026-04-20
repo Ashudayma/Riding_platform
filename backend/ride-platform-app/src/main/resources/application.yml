@@ -1,0 +1,183 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: ${SPRING_APPLICATION_NAME:ride-platform-app}
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/riding_platform}
+    username: ${SPRING_DATASOURCE_USERNAME:platform}
+    password: ${SPRING_DATASOURCE_PASSWORD:platform}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        format_sql: true
+  flyway:
+    enabled: true
+    create-schemas: true
+    locations: classpath:db/migration
+    schemas:
+      - public
+      - identity
+      - rider
+      - driver
+      - ride
+      - sharedride
+      - tracking
+      - pricing
+      - payment
+      - fraud
+      - rating
+      - notification
+      - admin
+    default-schema: public
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: ${SPRING_KAFKA_CONSUMER_GROUP_ID:ride-platform-app}
+      auto-offset-reset: ${SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET:earliest}
+    producer:
+      acks: all
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI:http://localhost:8081/realms/riding-platform}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics,env
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when_authorized
+      group:
+        readiness:
+          include: readinessState,db,redis,ping
+        liveness:
+          include: livenessState,ping
+  health:
+    redis:
+      enabled: true
+    db:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+      environment: ${PLATFORM_ENVIRONMENT:local}
+      platform: ${platform.name}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+platform:
+  name: ${PLATFORM_NAME:riding-platform}
+  dispatch:
+    assignment-timeout-seconds: ${PLATFORM_DISPATCH_ASSIGNMENT_TIMEOUT_SECONDS:15}
+    candidate-limit: ${PLATFORM_DISPATCH_CANDIDATE_LIMIT:10}
+    candidate-cache-seconds: ${PLATFORM_DISPATCH_CANDIDATE_CACHE_SECONDS:20}
+    timeout-scan-batch-size: ${PLATFORM_DISPATCH_TIMEOUT_SCAN_BATCH_SIZE:100}
+    retry-backoff-seconds: ${PLATFORM_DISPATCH_RETRY_BACKOFF_SECONDS:2}
+    max-dispatch-rounds: ${PLATFORM_DISPATCH_MAX_DISPATCH_ROUNDS:3}
+    average-city-speed-kph: ${PLATFORM_DISPATCH_AVERAGE_CITY_SPEED_KPH:22}
+    score:
+      distance-weight: 0.24
+      eta-weight: 0.22
+      rating-weight: 0.12
+      acceptance-weight: 0.12
+      cancellation-weight: 0.10
+      idle-time-weight: 0.08
+      fraud-penalty-weight: 0.08
+      vehicle-compatibility-weight: 0.02
+      availability-weight: 0.02
+      max-idle-time-seconds: 1800
+      max-eta-seconds: 1800
+      max-distance-meters: 5000
+  shared-ride:
+    max-detour-minutes: ${PLATFORM_SHARED_RIDE_MAX_DETOUR_MINUTES:12}
+    max-pickup-stops: ${PLATFORM_SHARED_RIDE_MAX_PICKUP_STOPS:3}
+    max-drop-stops: ${PLATFORM_SHARED_RIDE_MAX_DROP_STOPS:3}
+    max-pickup-wait-minutes: ${PLATFORM_SHARED_RIDE_MAX_PICKUP_WAIT_MINUTES:10}
+    max-detour-percentage: ${PLATFORM_SHARED_RIDE_MAX_DETOUR_PERCENTAGE:30}
+    max-pool-search-radius-meters: ${PLATFORM_SHARED_RIDE_MAX_POOL_SEARCH_RADIUS_METERS:4000}
+    base-compatibility-threshold: ${PLATFORM_SHARED_RIDE_BASE_COMPATIBILITY_THRESHOLD:0.55}
+    pricing-discount-factor: ${PLATFORM_SHARED_RIDE_PRICING_DISCOUNT_FACTOR:0.18}
+  realtime:
+    broker-heartbeat-millis: ${PLATFORM_REALTIME_BROKER_HEARTBEAT_MILLIS:10000}
+    outbound-location-throttle-millis: ${PLATFORM_REALTIME_OUTBOUND_LOCATION_THROTTLE_MILLIS:1000}
+    minimum-location-distance-meters: ${PLATFORM_REALTIME_MINIMUM_LOCATION_DISTANCE_METERS:20}
+    stale-session-seconds: ${PLATFORM_REALTIME_STALE_SESSION_SECONDS:90}
+  fraud:
+    repeated-cancellation-threshold: 4
+    failed-payment-threshold: 3
+    promo-abuse-threshold: 5
+    short-trip-repeat-threshold: 4
+    cancellation-window-hours: 24
+    payment-window-hours: 6
+    promo-window-hours: 24
+    short-trip-window-hours: 12
+    account-anomaly-window-hours: 24
+    gps-high-accuracy-meters: 120
+    impossible-speed-kph: 140
+    route-deviation-threshold-percent: 35
+    max-short-trip-distance-meters: 1500
+    max-short-trip-duration-seconds: 420
+    medium-risk-threshold: 25
+    high-risk-threshold: 50
+    critical-risk-threshold: 80
+    flag-dedupe-hours: 12
+  notification:
+    max-retry-attempts: 4
+    initial-retry-delay-seconds: 30
+    retry-scan-batch-size: 100
+    default-locale: en
+  security:
+    issuer-uri: ${PLATFORM_SECURITY_ISSUER_URI:http://localhost:8081/realms/riding-platform}
+    resource-client-id: ${PLATFORM_SECURITY_RESOURCE_CLIENT_ID:riding-platform-api}
+    required-audience: ${PLATFORM_SECURITY_REQUIRED_AUDIENCE:riding-platform-api}
+    trusted-proxy-hops: ${PLATFORM_SECURITY_TRUSTED_PROXY_HOPS:1}
+    rate-limit:
+      enabled: true
+      window-seconds: 60
+      rider-requests-per-window: 60
+      driver-requests-per-window: 120
+      admin-requests-per-window: 180
+      support-requests-per-window: 120
+      fraud-requests-per-window: 120
+      anonymous-requests-per-window: 20
+    idempotency:
+      enabled: true
+      ttl-hours: 24
+      protected-paths:
+        - /api/v1/rides
+        - /api/v1/payments
+        - /api/v1/rider/bookings
+    audit:
+      enabled: true
+      audited-path-prefixes:
+        - /api/v1/admin
+        - /api/v1/support
+        - /api/v1/fraud
+        - /api/v1/rides
+        - /api/v1/payments
+      include-read-only-admin-operations: true
+
+logging:
+  file:
+    name: ${LOG_FILE_PATH:logs/ride-platform-app.log}
+  level:
+    root: ${LOG_LEVEL_ROOT:INFO}
+    com.ridingplatform: ${LOG_LEVEL_APP:INFO}

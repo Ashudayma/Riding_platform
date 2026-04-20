@@ -1,0 +1,34 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    platform: riding-platform
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["prometheus:9090"]
+
+  - job_name: backend-actuator
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ["backend:8080"]
+        labels:
+          service: ride-platform-backend
+          layer: backend
+
+  - job_name: ai-risk-scoring
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["ai-risk-scoring:8090"]
+        labels:
+          service: ai-risk-scoring
+          layer: ai
+
+  - job_name: keycloak
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["keycloak:8081"]
+        labels:
+          service: keycloak
+          layer: identity

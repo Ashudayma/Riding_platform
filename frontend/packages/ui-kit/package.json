@@ -1,0 +1,14 @@
+{
+  "name": "@riding-platform/ui-kit",
+  "private": true,
+  "version": "0.1.0",
+  "main": "src/index.tsx",
+  "types": "src/index.tsx",
+  "dependencies": {
+    "react": "^19.0.0"
+  },
+  "scripts": {
+    "build": "node -e \"console.log('ui-kit package is source-only')\"",
+    "typecheck": "node -e \"console.log('ui-kit package typecheck is handled by app consumers')\""
+  }
+}

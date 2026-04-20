@@ -1,0 +1,14 @@
+{
+  "name": "@riding-platform/api-client",
+  "private": true,
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "@riding-platform/config": "0.1.0"
+  },
+  "scripts": {
+    "build": "node -e \"console.log('api-client package is source-only')\"",
+    "typecheck": "node -e \"console.log('api-client package typecheck is handled by app consumers')\""
+  }
+}

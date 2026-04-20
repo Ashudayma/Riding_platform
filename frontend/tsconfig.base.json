@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "@riding-platform/ui-kit": ["packages/ui-kit/src"],
+      "@riding-platform/api-client": ["packages/api-client/src"],
+      "@riding-platform/auth": ["packages/auth/src"],
+      "@riding-platform/realtime": ["packages/realtime/src"],
+      "@riding-platform/config": ["packages/config/src"]
+    }
+  }
+}

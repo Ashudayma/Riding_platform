@@ -1,0 +1,1311 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R 10 0 R 12 0 R 14 0 R 16 0 R 18 0 R 20 0 R 22 0 R 24 0 R] /Count 11 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
+endobj
+5 0 obj
+<< /Length 3118 >>
+stream
+BT
+/F1 10 Tf
+40 800 Td
+() Tj
+0 -14 Td
+(RIDE PLATFORM INTERVIEW PREP) Tj
+0 -14 Td
+(============================) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+() Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Project Summary For Resume) Tj
+0 -14 Td
+(--------------------------) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Built a production-grade ride-hailing and ride-sharing platform inspired by Uber using) Tj
+0 -14 Td
+(Java 21, Spring Boot, PostgreSQL, Redis, Kafka, Keycloak, WebSocket, Next.js, and a Python) Tj
+0 -14 Td
+(FastAPI AI service. Designed the platform as a modular monolith with event-driven seams to) Tj
+0 -14 Td
+(support normal rides, pooled rides, real-time tracking, fraud and risk detection, dynamic) Tj
+0 -14 Td
+(pricing, driver dispatch, admin operations, and production-style observability. Focused on) Tj
+0 -14 Td
+(clean domain boundaries, low-latency geospatial search, resilient asynchronous workflows,) Tj
+0 -14 Td
+(and a clear scaling path toward selective service extraction.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Resume Bullet Points) Tj
+0 -14 Td
+(--------------------) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Architected and built a production-style ride-hailing platform in Java Spring Boot with) Tj
+0 -14 Td
+(  PostgreSQL, Redis, Kafka, Keycloak, and WebSocket, supporting booking, dispatch, real-time) Tj
+0 -14 Td
+(  trip tracking, pricing, notifications, admin operations, and fraud controls.) Tj
+0 -14 Td
+(- Designed a shared ride matching engine with route permutation evaluation, detour) Tj
+0 -14 Td
+(  constraints, seat-capacity checks, compatibility scoring, and pooled pricing hooks,) Tj
+0 -14 Td
+(  enabling multi-pickup and multi-drop ride combinations on the same trip graph.) Tj
+0 -14 Td
+(- Implemented low-latency driver state and dispatch foundations using Redis GEO for nearby-) Tj
+0 -14 Td
+(  driver lookup, Kafka-driven assignment workflows, Prometheus and Grafana observability,) Tj
+0 -14 Td
+(  structured logging, and a FastAPI AI service for fraud scoring and probability-based) Tj
+0 -14 Td
+(  product intelligence.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Complete System Design Explanation) Tj
+0 -14 Td
+(----------------------------------) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### 1. High-level architecture) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(The platform is built as a modular monolith with event-driven seams.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Why that matters:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- ride booking, pricing, dispatch, fraud checks, and trip lifecycle are strongly coupled) Tj
+0 -14 Td
+(  business flows) Tj
+0 -14 Td
+(- early product evolution is faster with in-process coordination) Tj
+0 -14 Td
+(- Kafka is still used so the architecture can evolve toward microservices later without) Tj
+0 -14 Td
+(  rewriting the domain model) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### 2. Main components) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Rider, driver, and admin frontends in Next.js) Tj
+0 -14 Td
+(- Spring Boot backend exposing REST APIs and STOMP/WebSocket channels) Tj
+0 -14 Td
+(- PostgreSQL as the source of truth for transactional state) Tj
+0 -14 Td
+(- Redis for current driver state, nearby-driver geo search, rate limiting, idempotency, and) Tj
+ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 2666 >>
+stream
+BT
+/F1 10 Tf
+40 800 Td
+(  short-lived caches) Tj
+0 -14 Td
+(- Kafka for ride, dispatch, tracking, fraud, and notification events) Tj
+0 -14 Td
+(- Keycloak for OIDC authentication and RBAC) Tj
+0 -14 Td
+(- FastAPI AI service for fraud scoring, cancellation probability, driver acceptance) Tj
+0 -14 Td
+(  probability, demand hotspots, and pooled compatibility scoring) Tj
+0 -14 Td
+(- Prometheus, Grafana, Loki, and Promtail for observability) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### 3. Core request flow) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(#### Booking) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(1. Rider calls fare estimate API.) Tj
+0 -14 Td
+(2. Backend computes quote using pricing config, surge logic, and pooled discount rules.) Tj
+0 -14 Td
+(3. Rider books a ride with an idempotency key.) Tj
+0 -14 Td
+(4. Ride request is stored in PostgreSQL.) Tj
+0 -14 Td
+(5. Ride requested event is published to Kafka.) Tj
+0 -14 Td
+(6. Dispatch engine consumes the event and searches nearby eligible drivers.) Tj
+0 -14 Td
+(7. Best driver is selected through weighted scoring.) Tj
+0 -14 Td
+(8. Assignment is published through Kafka and pushed to rider and driver via WebSocket.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(#### Driver location flow) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(1. Driver app sends authenticated location updates.) Tj
+0 -14 Td
+(2. Current driver position is written to Redis GEO and driver state hash.) Tj
+0 -14 Td
+(3. Location update event is published to Kafka.) Tj
+0 -14 Td
+(4. Realtime layer fans location updates to subscribed riders and drivers.) Tj
+0 -14 Td
+(5. Historical points can be persisted asynchronously for audit and analytics.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(#### Fraud flow) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(1. Cancellation, payment, and tracking events land on Kafka.) Tj
+0 -14 Td
+(2. Fraud pipeline evaluates Redis velocity windows and rule-based conditions.) Tj
+0 -14 Td
+(3. Risk score is updated in PostgreSQL.) Tj
+0 -14 Td
+(4. Driver or rider can be flagged, blocked, or surfaced to analysts.) Tj
+0 -14 Td
+(5. Later, the Python AI service can enrich that decision with model inference.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Major Trade-offs) Tj
+0 -14 Td
+(----------------) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Modular monolith vs microservices) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(I chose a modular monolith first.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Benefits:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- simpler transactional consistency) Tj
+0 -14 Td
+(- lower operational overhead) Tj
+0 -14 Td
+(- faster feature iteration) Tj
+0 -14 Td
+(- easier debugging across tightly coupled flows) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Trade-off:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- independent scaling is less granular than true microservices) Tj
+ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 9 0 R >>
+endobj
+9 0 obj
+<< /Length 1973 >>
+stream
+BT
+/F1 10 Tf
+40 800 Td
+() Tj
+0 -14 Td
+(How I mitigated it:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- strict package and domain boundaries) Tj
+0 -14 Td
+(- Kafka topics per domain event) Tj
+0 -14 Td
+(- Redis and PostgreSQL access isolated behind domain services) Tj
+0 -14 Td
+(- future extraction boundaries already identified: dispatch, tracking, pricing, fraud) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### PostgreSQL + Redis + Kafka) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Benefits:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- PostgreSQL gives strong consistency) Tj
+0 -14 Td
+(- Redis handles hot, low-latency mutable state) Tj
+0 -14 Td
+(- Kafka decouples heavy asynchronous work) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Trade-off:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- more moving pieces than a simple CRUD system) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Why it was still worth it:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- ride-hailing is not just CRUD) Tj
+0 -14 Td
+(- low-latency search, dispatch retries, realtime fanout, and fraud pipelines need) Tj
+0 -14 Td
+(  specialized infrastructure) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### WebSocket in backend vs separate realtime gateway) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Current choice:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Spring WebSocket/STOMP in the main backend) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Benefit:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- faster initial delivery) Tj
+0 -14 Td
+(- simpler auth and domain integration) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Trade-off:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- in-memory broker and node-local session registry become a scaling limit later) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Planned evolution:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- sticky sessions first) Tj
+0 -14 Td
+(- then external broker relay or dedicated realtime gateway) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Scaling Story) Tj
+0 -14 Td
+(-------------) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Booking APIs) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- idempotency support protects retries and duplicate submits) Tj
+0 -14 Td
+(- pricing rules and surge factors are cacheable in Redis) Tj
+ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 11 0 R >>
+endobj
+11 0 obj
+<< /Length 2909 >>
+stream
+BT
+/F1 10 Tf
+40 800 Td
+(- write path stays small: validate, persist, publish) Tj
+0 -14 Td
+(- non-blocking downstream work is handled asynchronously through Kafka) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Interview version:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("I kept the booking path synchronous only for user-critical work and pushed side effects) Tj
+0 -14 Td
+(like notifications, fraud evaluation, and some downstream reactions behind Kafka to) Tj
+0 -14 Td
+(protect booking latency.") Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Driver location updates) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Redis GEO is used for current hot state) Tj
+0 -14 Td
+(- current driver state is stored in Redis hashes for fast lookup) Tj
+0 -14 Td
+(- location fanout is throttled by time and distance to avoid flooding subscribers) Tj
+0 -14 Td
+(- location history can be persisted asynchronously instead of making PostgreSQL the hot path) Tj
+0 -14 Td
+(  for every update) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Interview version:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("I treated location updates as a high-frequency stream problem, not a normal CRUD write.) Tj
+0 -14 Td
+(Redis absorbs the hot traffic, Kafka decouples persistence and downstream consumers, and) Tj
+0 -14 Td
+(PostgreSQL remains the system of record for durable history.") Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Dispatch engine) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- ride request event triggers candidate search) Tj
+0 -14 Td
+(- nearby drivers come from Redis first, PostGIS second) Tj
+0 -14 Td
+(- weighted scoring considers distance, ETA, rating, acceptance, cancellation, idle time,) Tj
+0 -14 Td
+(  risk penalty, vehicle compatibility, and availability) Tj
+0 -14 Td
+(- assignment is concurrency-safe to prevent double assignment) Tj
+0 -14 Td
+(- timeout and reassignment are supported) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Interview version:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("Dispatch is the decision engine of the platform. I optimized it around short-lived) Tj
+0 -14 Td
+(candidate sets, fast proximity lookup, deterministic scoring, and safe state transitions) Tj
+0 -14 Td
+(to avoid race conditions when many drivers are being evaluated at once.") Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### WebSocket layer) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- rider and driver updates are pushed over STOMP/WebSocket) Tj
+0 -14 Td
+(- session registry tracks connection health) Tj
+0 -14 Td
+(- driver location fanout guard prevents excessive publishes) Tj
+0 -14 Td
+(- current scaling limit is the simple broker, which is acceptable early but not the final) Tj
+0 -14 Td
+(  state) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Kafka consumers) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- separate consumer groups for dispatch, realtime, fraud, and notifications) Tj
+0 -14 Td
+(- natural future optimization is listener concurrency per topic plus DLQs and lag monitoring) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Fraud pipeline) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- cancellation, payment, and tracking events are streamed to Kafka) Tj
+ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 13 0 R >>
+endobj
+13 0 obj
+<< /Length 2299 >>
+stream
+BT
+/F1 10 Tf
+40 800 Td
+(- Redis counters back rolling rule windows) Tj
+0 -14 Td
+(- fraud flags and risk profiles persist to PostgreSQL) Tj
+0 -14 Td
+(- blocked status is pushed back into driver eligibility so risk actually changes business) Tj
+0 -14 Td
+(  behavior) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Security Story) Tj
+0 -14 Td
+(--------------) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Identity and access) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Keycloak is the identity provider) Tj
+0 -14 Td
+(- Spring Boot acts as a JWT resource server) Tj
+0 -14 Td
+(- frontend apps are designed around OIDC-compatible login flows) Tj
+0 -14 Td
+(- roles include rider, driver, platform-admin, ops-admin, support-agent, and fraud-analyst) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Authorization) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- endpoint-level RBAC protects rider, driver, and admin APIs) Tj
+0 -14 Td
+(- domain-level authorization protects business operations) Tj
+0 -14 Td
+(- sensitive admin actions are audited) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Abuse and safety controls) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Redis-backed rate limiting by actor class) Tj
+0 -14 Td
+(- idempotency protection on booking and payment-like endpoints) Tj
+0 -14 Td
+(- correlation IDs for traceability) Tj
+0 -14 Td
+(- structured logging and audit records for privileged operations) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Interview version:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("I didn?t treat auth as just login. The system uses identity, RBAC, rate limiting,) Tj
+0 -14 Td
+(idempotency, and auditability together so both normal user traffic and privileged) Tj
+0 -14 Td
+(operations are protected.") Tj
+0 -14 Td
+() Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Fraud Detection Story) Tj
+0 -14 Td
+(---------------------) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Why fraud matters) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Ride-hailing is vulnerable to promo abuse, fake trips, GPS spoofing, rider-driver) Tj
+0 -14 Td
+(collusion, and cancellation gaming.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Signals implemented) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- repeated cancellations) Tj
+0 -14 Td
+(- failed payment attempts) Tj
+0 -14 Td
+(- suspicious short repeated trips) Tj
+0 -14 Td
+(- GPS spoofing indicators) Tj
+0 -14 Td
+(- route deviation anomalies) Tj
+0 -14 Td
+(- account and device anomalies) Tj
+0 -14 Td
+(- promo abuse windows) Tj
+0 -14 Td
+() Tj
+ET
+endstream
+endobj
+14 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 15 0 R >>
+endobj
+15 0 obj
+<< /Length 2621 >>
+stream
+BT
+/F1 10 Tf
+40 800 Td
+(### Architecture) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Kafka listeners consume cancellation, payment, and location topics) Tj
+0 -14 Td
+(- Redis stores short-lived counters and velocity windows) Tj
+0 -14 Td
+(- PostgreSQL stores durable risk profiles and fraud flags) Tj
+0 -14 Td
+(- admin and fraud-analyst dashboards surface alerts for review) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Business impact) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- risky drivers can be excluded from dispatch) Tj
+0 -14 Td
+(- risky riders can be blocked or put on hold) Tj
+0 -14 Td
+(- fraud signals become part of operational decision-making, not just reporting) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Interview version:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("The important thing is that fraud was not an offline report. I integrated the fraud score) Tj
+0 -14 Td
+(into live platform decisions like driver eligibility and administrative review, so the) Tj
+0 -14 Td
+(system could actively reduce platform loss.") Tj
+0 -14 Td
+() Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Shared Ride Matching Explanation) Tj
+0 -14 Td
+(--------------------------------) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Problem) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Shared rides are much harder than normal rides because the system must keep both riders) Tj
+0 -14 Td
+(satisfied while optimizing route efficiency and seat usage.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### First version design) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- evaluates whether a new rider can be inserted into an existing route) Tj
+0 -14 Td
+(- supports the four main two-rider pickup/drop permutations:) Tj
+0 -14 Td
+(  - pickup A / pickup B / drop A / drop B) Tj
+0 -14 Td
+(  - pickup A / pickup B / drop B / drop A) Tj
+0 -14 Td
+(  - pickup B / pickup A / drop A / drop B) Tj
+0 -14 Td
+(  - pickup B / pickup A / drop B / drop A) Tj
+0 -14 Td
+(- enforces:) Tj
+0 -14 Td
+(  - max pickup wait time) Tj
+0 -14 Td
+(  - max detour time) Tj
+0 -14 Td
+(  - max detour percentage) Tj
+0 -14 Td
+(  - seat capacity) Tj
+0 -14 Td
+(  - rider compatibility threshold) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Why this is strong in interviews) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(It shows you did not hand-wave pooled rides. You modeled route feasibility, operational) Tj
+0 -14 Td
+(constraints, pricing implications, and extensibility for N riders later.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Interview version:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("I intentionally built pooled matching as a route-insertion problem with explicit) Tj
+0 -14 Td
+(constraint checks, not as a simple if-else on ride type. That made the first version) Tj
+0 -14 Td
+(realistic and left a clear path toward richer optimization later.") Tj
+0 -14 Td
+() Tj
+ET
+endstream
+endobj
+16 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 17 0 R >>
+endobj
+17 0 obj
+<< /Length 2626 >>
+stream
+BT
+/F1 10 Tf
+40 800 Td
+() Tj
+0 -14 Td
+(How AI Improved The Product) Tj
+0 -14 Td
+(---------------------------) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(The AI service is separate from the core backend so model evolution does not destabilize) Tj
+0 -14 Td
+(the transactional ride platform.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Use cases) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- fraud risk scoring) Tj
+0 -14 Td
+(- ride cancellation probability) Tj
+0 -14 Td
+(- driver acceptance probability) Tj
+0 -14 Td
+(- demand hotspot prediction) Tj
+0 -14 Td
+(- pooled ride compatibility scoring) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Product value) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- fraud scoring reduces platform abuse and operational loss) Tj
+0 -14 Td
+(- cancellation probability can improve dispatch or rider messaging) Tj
+0 -14 Td
+(- driver acceptance probability improves assignment quality) Tj
+0 -14 Td
+(- hotspot prediction can support surge and driver supply positioning) Tj
+0 -14 Td
+(- compatibility scoring improves pooled match quality) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Interview version:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("I used AI where probability actually improves product decisions, but I kept it outside) Tj
+0 -14 Td
+(the transaction-critical core. That gave me the benefit of ML without making the platform) Tj
+0 -14 Td
+(dependent on model latency for every request.") Tj
+0 -14 Td
+() Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Metrics You Can Realistically Claim) Tj
+0 -14 Td
+(-----------------------------------) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(These should be framed as local or Docker Compose simulation results, not global) Tj
+0 -14 Td
+(production numbers.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Safe, realistic claims) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- "In local k6 simulations, the booking flow sustained tens of requests per second with sub-) Tj
+0 -14 Td
+(  second p95 latency on a laptop-scale environment.") Tj
+0 -14 Td
+(- "Driver location ingestion handled hundreds of updates per second with low hundreds of) Tj
+0 -14 Td
+(  milliseconds p95 latency when Redis absorbed the hot path.") Tj
+0 -14 Td
+(- "Realtime ride updates remained near real time under baseline simulation, with throttled) Tj
+0 -14 Td
+(  fanout to avoid flooding subscribers.") Tj
+0 -14 Td
+(- "Dispatch and fraud were event-driven, so booking latency stayed isolated from slower) Tj
+0 -14 Td
+(  downstream work.") Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Concrete numbers you can use if you run the provided tests and stay close to baseline) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- booking:) Tj
+0 -14 Td
+(  20 to 50 requests/sec) Tj
+0 -14 Td
+(  p95 around 500 to 800 ms) Tj
+0 -14 Td
+(  p99 under 1.5 s) Tj
+0 -14 Td
+(- driver location:) Tj
+ET
+endstream
+endobj
+18 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 19 0 R >>
+endobj
+19 0 obj
+<< /Length 1877 >>
+stream
+BT
+/F1 10 Tf
+40 800 Td
+(  150 to 300 updates/sec) Tj
+0 -14 Td
+(  p95 around 150 to 300 ms) Tj
+0 -14 Td
+(  p99 under 700 ms) Tj
+0 -14 Td
+(- AI inference:) Tj
+0 -14 Td
+(  low tens of milliseconds to low hundreds depending on model and feature shape) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### How to say this honestly) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Good:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("In local Docker Compose and k6-based simulations, I validated the architecture at tens of) Tj
+0 -14 Td
+(booking requests per second and a few hundred driver location updates per second while) Tj
+0 -14 Td
+(keeping the hot path latency within practical targets.") Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Avoid:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("It supports millions of rides.") Tj
+0 -14 Td
+() Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Architecture Diagram Description You Can Draw In An Interview) Tj
+0 -14 Td
+(-------------------------------------------------------------) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Draw it left to right.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Layer 1: Clients) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Rider App) Tj
+0 -14 Td
+(- Driver App) Tj
+0 -14 Td
+(- Admin Dashboard) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(All three point to the backend.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Layer 2: Platform Edge) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Spring Boot Backend) Tj
+0 -14 Td
+(- REST APIs) Tj
+0 -14 Td
+(- WebSocket/STOMP for realtime) Tj
+0 -14 Td
+(- Keycloak beside it for identity) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Show Keycloak issuing JWTs to clients and backend validating them.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Layer 3: Core Domain Modules Inside Backend) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Inside one backend box, divide into:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Rider) Tj
+0 -14 Td
+(- Driver) Tj
+0 -14 Td
+(- Ride) Tj
+0 -14 Td
+(- Dispatch) Tj
+0 -14 Td
+(- Shared Ride) Tj
+0 -14 Td
+(- Pricing) Tj
+0 -14 Td
+(- Fraud) Tj
+0 -14 Td
+(- Notifications) Tj
+0 -14 Td
+(- Admin) Tj
+ET
+endstream
+endobj
+20 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 21 0 R >>
+endobj
+21 0 obj
+<< /Length 2328 >>
+stream
+BT
+/F1 10 Tf
+40 800 Td
+() Tj
+0 -14 Td
+(Mention modular monolith with clean domain boundaries.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Layer 4: Data and Messaging) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Below backend draw:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- PostgreSQL) Tj
+0 -14 Td
+(- Redis) Tj
+0 -14 Td
+(- Kafka) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Arrows:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Backend <-> PostgreSQL for transactional state) Tj
+0 -14 Td
+(- Backend <-> Redis for hot state, geo, cache, rate limit, idempotency) Tj
+0 -14 Td
+(- Backend -> Kafka for domain events) Tj
+0 -14 Td
+(- Kafka -> dispatch, fraud, realtime, notifications consumers) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### Layer 5: AI and Observability) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(To the right or below:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- FastAPI AI Service) Tj
+0 -14 Td
+(- Prometheus) Tj
+0 -14 Td
+(- Grafana) Tj
+0 -14 Td
+(- Loki) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Show backend calling AI service for scoring, and metrics/logs flowing into observability) Tj
+0 -14 Td
+(stack.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Likely Interview Questions And Strong Answers) Tj
+0 -14 Td
+(---------------------------------------------) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### 1. Why did you choose a modular monolith instead of microservices?) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Strong answer:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("The most critical domains like dispatch, pricing, fraud, and ride lifecycle were tightly) Tj
+0 -14 Td
+(coupled and evolving quickly. A modular monolith let me preserve strong consistency and) Tj
+0 -14 Td
+(move fast without distributed transaction overhead. I still designed clear extraction) Tj
+0 -14 Td
+(seams through Kafka events, isolated domain packages, and dedicated infrastructure) Tj
+0 -14 Td
+(adapters.") Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### 2. How does dispatch choose the best driver?) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Strong answer:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("The dispatch engine first finds nearby eligible drivers, primarily from Redis-backed) Tj
+0 -14 Td
+(current state and geospatial lookup. It then computes a weighted score using distance,) Tj
+0 -14 Td
+(ETA, rating, acceptance rate, cancellation rate, idle time, fraud penalty, vehicle) Tj
+0 -14 Td
+(compatibility, and availability. The assignment flow is concurrency-safe and supports) Tj
+0 -14 Td
+(timeout plus reassignment.") Tj
+0 -14 Td
+() Tj
+ET
+endstream
+endobj
+22 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 23 0 R >>
+endobj
+23 0 obj
+<< /Length 3114 >>
+stream
+BT
+/F1 10 Tf
+40 800 Td
+(### 3. How did you handle real-time location at scale?) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Strong answer:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("I separated hot mutable state from durable history. Current driver location lives in) Tj
+0 -14 Td
+(Redis GEO for low-latency search and fanout, while PostgreSQL is reserved for durable) Tj
+0 -14 Td
+(state and history. Location events are also published to Kafka so persistence, fraud) Tj
+0 -14 Td
+(analysis, and realtime delivery can scale independently.") Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### 4. What made pooled rides hard?) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Strong answer:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("The core challenge was not just combining riders, but preserving user experience under) Tj
+0 -14 Td
+(route constraints. I modeled route insertion explicitly, evaluated key pickup/drop) Tj
+0 -14 Td
+(permutations, and enforced wait time, detour, and seat-capacity constraints. That made the) Tj
+0 -14 Td
+(first implementation realistic while keeping it extensible to more advanced optimization) Tj
+0 -14 Td
+(later.") Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### 5. How did you secure the platform?) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Strong answer:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("I used Keycloak for OIDC and role-based access control, secured the backend as a JWT) Tj
+0 -14 Td
+(resource server, added role checks across rider, driver, and admin paths, and layered) Tj
+0 -14 Td
+(Redis-backed rate limiting plus idempotency for abuse and reliability. I also logged) Tj
+0 -14 Td
+(privileged admin actions for auditability.") Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### 6. How does fraud detection work?) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Strong answer:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("Fraud is event driven. Ride cancellations, payments, and location updates go through) Tj
+0 -14 Td
+(Kafka. Redis maintains short-lived counters and rolling windows for velocity checks.) Tj
+0 -14 Td
+(PostgreSQL stores durable risk profiles and alerts. The result is not just passive) Tj
+0 -14 Td
+(reporting because fraud state feeds back into dispatch eligibility and admin workflows.") Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### 7. Where would this architecture break first at higher scale?) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Strong answer:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("The first likely constraints are the in-memory WebSocket broker, dispatch coordination) Tj
+0 -14 Td
+(under surge, and if left unchecked, too many location writes hitting the database. My) Tj
+0 -14 Td
+(scaling plan is to keep Redis as the hot path, increase Kafka partition-aware concurrency,) Tj
+0 -14 Td
+(move more persistence async, and externalize realtime coordination when connection counts) Tj
+0 -14 Td
+(justify it.") Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### 8. How did AI add value without making the system fragile?) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Strong answer:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("I kept AI as a separate FastAPI inference service rather than embedding it in the) Tj
+0 -14 Td
+(critical transaction path. That let the platform use probabilistic signals for fraud,) Tj
+0 -14 Td
+(cancellations, acceptance, and pooled compatibility while keeping the ride system) Tj
+ET
+endstream
+endobj
+24 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 25 0 R >>
+endobj
+25 0 obj
+<< /Length 1999 >>
+stream
+BT
+/F1 10 Tf
+40 800 Td
+(resilient even if models are slow or being retrained.") Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### 9. What production-hardening steps did you add?) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Strong answer:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("I added actuator health and readiness probes, structured JSON logging, Prometheus and) Tj
+0 -14 Td
+(Grafana metrics, centralized logging, Docker-based local orchestration, CI validation,) Tj
+0 -14 Td
+(performance-tuning profiles, and k6 scripts for the two hottest paths: booking and driver) Tj
+0 -14 Td
+(location ingestion.") Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(### 10. If you had more time, what would you improve next?) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Strong answer:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("I would add a transactional outbox, Kafka dead-letter handling, Redis-backed WebSocket) Tj
+0 -14 Td
+(presence, partitioning for large append-heavy PostgreSQL tables, and an external broker or) Tj
+0 -14 Td
+(realtime gateway once the in-process WebSocket broker became the limiting factor.") Tj
+0 -14 Td
+() Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Strong Closing Narrative) Tj
+0 -14 Td
+(------------------------) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(If the interviewer asks you to summarize the project in one minute, say this:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+("I built a production-style ride-hailing platform with normal rides, pooled rides, real-) Tj
+0 -14 Td
+(time tracking, fraud detection, dynamic pricing, and admin operations. The backend is a) Tj
+0 -14 Td
+(modular monolith in Spring Boot with PostgreSQL for transactional state, Redis for hot) Tj
+0 -14 Td
+(state and geospatial lookup, Kafka for asynchronous workflows, Keycloak for auth,) Tj
+0 -14 Td
+(WebSocket for live updates, and a Python AI service for risk and probability-based) Tj
+0 -14 Td
+(intelligence. The part I am proudest of is that I designed it like a real platform, not) Tj
+0 -14 Td
+(just a CRUD app: dispatch, pooling, fraud, realtime, observability, and scaling were) Tj
+0 -14 Td
+(first-class concerns from the start.") Tj
+ET
+endstream
+endobj
+xref
+0 26
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000190 00000 n 
+0000000260 00000 n 
+0000000386 00000 n 
+0000003556 00000 n 
+0000003682 00000 n 
+0000006400 00000 n 
+0000006526 00000 n 
+0000008551 00000 n 
+0000008679 00000 n 
+0000011641 00000 n 
+0000011769 00000 n 
+0000014121 00000 n 
+0000014249 00000 n 
+0000016923 00000 n 
+0000017051 00000 n 
+0000019730 00000 n 
+0000019858 00000 n 
+0000021788 00000 n 
+0000021916 00000 n 
+0000024297 00000 n 
+0000024425 00000 n 
+0000027592 00000 n 
+0000027720 00000 n 
+trailer
+<< /Size 26 /Root 1 0 R >>
+startxref
+29772
+%%EOF

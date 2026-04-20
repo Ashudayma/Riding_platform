@@ -1,0 +1,17 @@
+{
+  "name": "riding-platform-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:rider": "npm run dev --workspace rider-web",
+    "dev:driver": "npm run dev --workspace driver-ops",
+    "dev:admin": "npm run dev --workspace admin-dashboard",
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces",
+    "typecheck": "npm run typecheck --workspaces"
+  }
+}

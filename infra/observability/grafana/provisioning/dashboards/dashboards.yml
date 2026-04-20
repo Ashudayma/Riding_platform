@@ -1,0 +1,9 @@
+apiVersion: 1
+
+providers:
+  - name: Riding Platform Dashboards
+    folder: Riding Platform
+    type: file
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards
